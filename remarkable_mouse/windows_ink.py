@@ -217,7 +217,7 @@ class PenDevice:
             eraser=eraser,
             barrel=barrel,
         )
-        if not self.user32.InjectSyntheticPointerInput(self.handle, ctypes.byref(info), 1):
+        if not self.user32.InjectSyntheticPointerInput(self.handle, ctypes.pointer(info), 1):
             raise ctypes.WinError(ctypes.get_last_error())
 
     def _inject_current_state(self, x, y, *, pressure, tilt_x, tilt_y, in_range, touching, eraser, barrel):
@@ -232,7 +232,7 @@ class PenDevice:
                     pressure=0,
                     tilt_x=tilt_x,
                     tilt_y=tilt_y,
-                    flags=POINTER_FLAG_NEW | POINTER_FLAG_UPDATE | POINTER_FLAG_INRANGE,
+                    flags=POINTER_FLAG_NEW | POINTER_FLAG_INRANGE,
                     eraser=eraser,
                     barrel=barrel,
                 )
@@ -254,7 +254,7 @@ class PenDevice:
         elif in_range:
             flags = POINTER_FLAG_UPDATE | POINTER_FLAG_INRANGE
             if not self.in_range:
-                flags |= POINTER_FLAG_NEW
+                flags = POINTER_FLAG_NEW | POINTER_FLAG_INRANGE
             if self.touching:
                 flags = POINTER_FLAG_UP | POINTER_FLAG_INRANGE
             self._inject(
