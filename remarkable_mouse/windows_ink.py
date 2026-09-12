@@ -13,6 +13,7 @@ log = logging.getLogger('remouse')
 PT_PEN = 3
 POINTER_FEEDBACK_DEFAULT = 1
 
+POINTER_FLAG_NEW = 0x00000001
 POINTER_FLAG_INRANGE = 0x00000002
 POINTER_FLAG_INCONTACT = 0x00000004
 POINTER_FLAG_DOWN = 0x00010000
@@ -231,7 +232,7 @@ class PenDevice:
                     pressure=0,
                     tilt_x=tilt_x,
                     tilt_y=tilt_y,
-                    flags=POINTER_FLAG_UPDATE | POINTER_FLAG_INRANGE,
+                    flags=POINTER_FLAG_NEW | POINTER_FLAG_UPDATE | POINTER_FLAG_INRANGE,
                     eraser=eraser,
                     barrel=barrel,
                 )
@@ -250,6 +251,8 @@ class PenDevice:
             )
         elif in_range:
             flags = POINTER_FLAG_UPDATE | POINTER_FLAG_INRANGE
+            if not self.in_range:
+                flags |= POINTER_FLAG_NEW
             if self.touching:
                 flags = POINTER_FLAG_UP | POINTER_FLAG_INRANGE
             self._inject(
@@ -299,7 +302,7 @@ def normalize_pressure(value, maximum):
     if maximum <= 0:
         return 0
     value = max(0, min(value, maximum))
-    return min(1024, int(value * 1024 / maximum))
+    return min(1023, int(value * 1023 / maximum))
 
 
 def normalize_tilt(value, minimum, maximum):
@@ -323,6 +326,7 @@ def read_event(stream, event_size):
 
 
 def read_tablet(rm, *, orientation, monitor_num, region, threshold, mode):
+    """Read remote reMarkable evdev pen events and inject them as Windows Ink."""
     del threshold
     monitor, _ = get_monitor(region, monitor_num, orientation)
     log.debug('Chose monitor: {}'.format(monitor))
