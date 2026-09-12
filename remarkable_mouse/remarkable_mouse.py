@@ -148,7 +148,9 @@ def main():
         parser.add_argument('--monitor', default=0, type=int, metavar='NUM', help="monitor to output to")
         parser.add_argument('--region', action='store_true', default=False, help="Use a GUI to position the output area. Overrides --monitor")
         parser.add_argument('--threshold', metavar='THRESH', default=600, type=int, help="stylus pressure threshold (default 600)")
-        parser.add_argument('--evdev', action='store_true', default=False, help="use evdev to support pen pressure (requires root, Linux only)")
+        output_group = parser.add_mutually_exclusive_group()
+        output_group.add_argument('--evdev', action='store_true', default=False, help="use evdev to support pen pressure (requires root, Linux only)")
+        output_group.add_argument('--windows-ink', action='store_true', default=False, help="use native Windows Ink pen injection (Windows 10 1809+, Windows only)")
 
         args = parser.parse_args()
 
@@ -171,6 +173,10 @@ def main():
 
         if args.evdev:
             from remarkable_mouse.evdev import read_tablet
+        elif args.windows_ink:
+            if sys.platform != 'win32':
+                parser.error('--windows-ink is only available on Windows')
+            from remarkable_mouse.windows_ink import read_tablet
 
         else:
             from remarkable_mouse.pynput import read_tablet

@@ -19,7 +19,7 @@ pip install remarkable-mouse
 remouse
 ```
 
-By default, `10.11.99.1` is used as the address.  Find your password in the reMarkable's [settings menu](https://remarkablewiki.com/tech/ssh).  If you are on Linux using X11, you can use the `--evdev` option for pressure support.
+By default, `10.11.99.1` is used as the address.  Find your password in the reMarkable's [settings menu](https://remarkablewiki.com/tech/ssh).  If you are on Linux using X11, you can use the `--evdev` option for pressure support.  On Windows 10 1809+ you can use `--windows-ink` to inject a native pen pointer with absolute positioning, hover, contact, and pressure.
 
 To use the `--region` flag, you may need to install the `python3-tk` or `python3-tkinter` package with your package manager.
 
@@ -45,11 +45,17 @@ running with pressure sensitivity (Linux only)
 sudo --preserve-env=USER,PATH env remouse --evdev
 ```
 
+running with native Windows Ink pen injection
+
+``` bash
+remouse --windows-ink
+```
+
 # Usage
 
 ```
 usage: remouse [-h] [--debug] [--key PATH] [--password PASSWORD] [--address ADDRESS] [--mode {fit,fill,stretch}] [--orientation {top,left,right,bottom}] [--monitor NUM] [--region] [--threshold THRESH]
-               [--evdev]
+               [--evdev | --windows-ink]
 
 use reMarkable tablet as a mouse input
 
@@ -68,5 +74,5 @@ optional arguments:
   --region              Use a GUI to position the output area. Overrides --monitor
   --threshold THRESH    stylus pressure threshold (default 600)
   --evdev               use evdev to support pen pressure (requires root, Linux only)
+  --windows-ink         use native Windows Ink pen injection (Windows 10 1809+, Windows only)
 ```
-
