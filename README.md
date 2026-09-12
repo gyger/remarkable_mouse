@@ -73,6 +73,6 @@ optional arguments:
   --monitor NUM         monitor to output to
   --region              Use a GUI to position the output area. Overrides --monitor
   --threshold THRESH    stylus pressure threshold (default 600)
-  --evdev               use evdev to support pen pressure (requires root, Linux only)
+  --evdev               use evdev to support pen pressure (requires root, Linux only; mutually exclusive with --windows-ink)
   --windows-ink         use native Windows Ink pen injection (Windows 10 1809+, Windows only)
 ```

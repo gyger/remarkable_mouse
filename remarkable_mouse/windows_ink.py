@@ -298,9 +298,8 @@ class PenDevice:
 def normalize_pressure(value, maximum):
     if maximum <= 0:
         return 0
-    if value >= maximum:
-        return 1024
-    return max(0, min(1023, round(max(0, value) * 1023 / maximum)))
+    value = max(0, min(value, maximum))
+    return min(1024, int(value * 1024 / maximum))
 
 
 def normalize_tilt(value, minimum, maximum):
@@ -308,6 +307,19 @@ def normalize_tilt(value, minimum, maximum):
         return None
     scaled = (value - minimum) * 180 / (maximum - minimum) - 90
     return round(max(-90, min(90, scaled)))
+
+
+def read_event(stream, event_size):
+    data = bytearray()
+    while len(data) < event_size:
+        try:
+            chunk = stream.read(event_size - len(data))
+        except TimeoutError:
+            continue
+        if not chunk:
+            raise EOFError
+        data.extend(chunk)
+    return bytes(data)
 
 
 def read_tablet(rm, *, orientation, monitor_num, region, threshold, mode):
@@ -326,13 +338,10 @@ def read_tablet(rm, *, orientation, monitor_num, region, threshold, mode):
     barrel = False
 
     stream = rm.pen
+    event_size = struct.calcsize(rm.e_format)
     try:
         while True:
-            try:
-                data = stream.read(struct.calcsize(rm.e_format))
-            except TimeoutError:
-                continue
-
+            data = read_event(stream, event_size)
             e_time, e_millis, e_type, e_code, e_value = struct.unpack(rm.e_format, data)
 
             if log.level == logging.DEBUG:
