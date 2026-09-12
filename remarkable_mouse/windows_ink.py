@@ -95,9 +95,6 @@ class POINTER_TYPE_INFO(ctypes.Structure):
 
 class PenDevice:
     def __init__(self):
-        if ctypes.sizeof(POINTER_TYPE_INFO) < ctypes.sizeof(POINTER_PEN_INFO) + ctypes.sizeof(wintypes.DWORD):
-            raise RuntimeError('Unexpected POINTER_TYPE_INFO layout')
-
         user32 = ctypes.WinDLL('user32', use_last_error=True)
         try:
             user32.CreateSyntheticPointerDevice
@@ -301,7 +298,7 @@ class PenDevice:
 def normalize_pressure(value, maximum):
     if maximum <= 0:
         return 0
-    return round(max(0, min(value, maximum)) * 1024 / maximum)
+    return min(1024, round(max(0, min(value, maximum)) * 1024 / maximum))
 
 
 def normalize_tilt(value, minimum, maximum):
