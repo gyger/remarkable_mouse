@@ -237,7 +237,9 @@ class PenDevice:
                     barrel=barrel,
                 )
             flags = POINTER_FLAG_DOWN | POINTER_FLAG_INRANGE | POINTER_FLAG_INCONTACT
-            if self.touching:
+            if self.in_range and not self.touching:
+                flags |= POINTER_FLAG_UPDATE
+            elif self.touching:
                 flags = POINTER_FLAG_UPDATE | POINTER_FLAG_INRANGE | POINTER_FLAG_INCONTACT
             self._inject(
                 x=x,
