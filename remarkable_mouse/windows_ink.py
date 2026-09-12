@@ -256,7 +256,7 @@ class PenDevice:
             if not self.in_range:
                 flags = POINTER_FLAG_NEW | POINTER_FLAG_INRANGE
             if self.touching:
-                flags = POINTER_FLAG_UP | POINTER_FLAG_INRANGE
+                flags = POINTER_FLAG_UP | POINTER_FLAG_INRANGE | POINTER_FLAG_INCONTACT
             self._inject(
                 x=x,
                 y=y,
@@ -274,7 +274,7 @@ class PenDevice:
                 pressure=0,
                 tilt_x=tilt_x,
                 tilt_y=tilt_y,
-                flags=POINTER_FLAG_UP | POINTER_FLAG_INRANGE,
+                flags=POINTER_FLAG_UP | POINTER_FLAG_INRANGE | POINTER_FLAG_INCONTACT,
                 eraser=eraser,
                 barrel=barrel,
             )
