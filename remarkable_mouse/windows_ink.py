@@ -168,6 +168,7 @@ class PenDevice:
                 self.handle = None
 
     def _clamp_virtual(self, x, y):
+        # Synthetic pen coordinates are relative to the virtual-screen origin.
         rel_x = int(x) - self.virtual_x
         rel_y = int(y) - self.virtual_y
         if self.virtual_width > 0:

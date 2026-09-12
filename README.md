@@ -45,7 +45,7 @@ running with pressure sensitivity (Linux only)
 sudo --preserve-env=USER,PATH env remouse --evdev
 ```
 
-running with native Windows Ink pen injection
+Running with native Windows Ink pen injection
 
 ``` bash
 remouse --windows-ink
