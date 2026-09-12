@@ -298,7 +298,9 @@ class PenDevice:
 def normalize_pressure(value, maximum):
     if maximum <= 0:
         return 0
-    return min(1024, round(max(0, min(value, maximum)) * 1024 / maximum))
+    if value >= maximum:
+        return 1024
+    return max(0, min(1023, round(max(0, value) * 1023 / maximum)))
 
 
 def normalize_tilt(value, minimum, maximum):
