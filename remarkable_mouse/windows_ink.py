@@ -201,7 +201,7 @@ class PenDevice:
 
         info.penInfo.penFlags = pen_flags
         info.penInfo.penMask = pen_mask
-        info.penInfo.pressure = max(0, min(1024, int(pressure)))
+        info.penInfo.pressure = max(0, min(1023, int(pressure)))
         info.penInfo.tiltX = 0 if tilt_x is None else max(-90, min(90, int(tilt_x)))
         info.penInfo.tiltY = 0 if tilt_y is None else max(-90, min(90, int(tilt_y)))
         return info
@@ -274,11 +274,31 @@ class PenDevice:
                 pressure=0,
                 tilt_x=tilt_x,
                 tilt_y=tilt_y,
-                flags=POINTER_FLAG_UP,
+                flags=POINTER_FLAG_UP | POINTER_FLAG_INRANGE,
+                eraser=eraser,
+                barrel=barrel,
+            )
+            self._inject(
+                x=x,
+                y=y,
+                pressure=0,
+                tilt_x=tilt_x,
+                tilt_y=tilt_y,
+                flags=POINTER_FLAG_UPDATE,
                 eraser=eraser,
                 barrel=barrel,
             )
         elif self.in_range:
+            self._inject(
+                x=x,
+                y=y,
+                pressure=0,
+                tilt_x=tilt_x,
+                tilt_y=tilt_y,
+                flags=POINTER_FLAG_UPDATE | POINTER_FLAG_INRANGE,
+                eraser=eraser,
+                barrel=barrel,
+            )
             self._inject(
                 x=x,
                 y=y,
