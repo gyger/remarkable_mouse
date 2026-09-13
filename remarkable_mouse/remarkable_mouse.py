@@ -99,8 +99,7 @@ def connect_rm(*, address, key, password):
         username='root',
         password=password,
         pkey=pkey,
-        look_for_keys=False,
-        disabled_algorithms=dict(pubkeys=["rsa-sha2-512", "rsa-sha2-256"])
+        look_for_keys=False
     )
 
     session = client.get_transport().open_session()
